@@ -3,7 +3,9 @@ import './assets/index.css'
 import { createApp } from 'vue'
 import App from './App.vue'
 import { setupStore } from './store'
-import { setupRouter } from './router'
+import { router, setupRouter } from './router'
+import { setupRouterGuard } from './router/guard/index'
+import 'nprogress/nprogress.css'
 
 async function bootstrap() {
   const app = createApp(App)
@@ -11,6 +13,8 @@ async function bootstrap() {
   setupStore(app)
 
   setupRouter(app)
+
+  setupRouterGuard(router)
 
   app.mount('#app')
 }
