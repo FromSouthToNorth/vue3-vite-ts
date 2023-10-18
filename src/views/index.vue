@@ -9,13 +9,21 @@ import { useAppSetting } from '/@/hooks/useAppSetting'
 
 const { getBook, getXY } = useAppSetting()
 
-watch(() => getBook.value, (val) => {
-  console.log('watch book: ', val.name, val.list)
-})
+watch(
+  () =>
+    getBook.value,
+  (val) => {
+    console.log('watch book: ', val.name, val.list)
+  },
+  { deep: true },
+)
 
-watch(() => getXY.value, (val) => {
-  console.log('watch x: %d, y: %d', val.x, val.y)
-})
+watch(
+  () => getXY.value,
+  (val) => {
+    console.log('watch x: %d, y: %d', val.x, val.y)
+  },
+)
 
 function change(list: Array<item>) {
   console.log(list)
