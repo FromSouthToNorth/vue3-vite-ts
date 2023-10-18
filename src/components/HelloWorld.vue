@@ -79,10 +79,10 @@ function push() {
 }
 
 watch(
-  () => author.list,
-  (list: Array<item>) => {
-    appStore.setBook(author)
-    emits('change', list)
+  () => author,
+  (val) => {
+    appStore.setBook(val)
+    emits('change', val.list)
   },
   { deep: true },
 )

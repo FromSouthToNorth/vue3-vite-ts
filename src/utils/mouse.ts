@@ -1,8 +1,8 @@
 import { onMounted, onUnmounted, ref } from 'vue'
-import type { XY } from '/#/index'
+import type { RefXY } from '/#/index'
 import { useAppStoreWithOut } from '../store/modules/app'
 
-export function useMouse(): XY {
+export function useMouse(): RefXY {
   const appStore = useAppStoreWithOut()
   const x = ref<number>(0)
   const y = ref<number>(0)
@@ -11,8 +11,8 @@ export function useMouse(): XY {
     x.value = event.pageX
     y.value = event.pageY
     appStore.setXY({
-      x,
-      y,
+      x: x.value,
+      y: y.value,
     })
   }
 

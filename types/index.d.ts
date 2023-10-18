@@ -6,11 +6,11 @@ export interface item {
 }
 
 export interface Book {
-  name?: string
-  list?: Array<item>
+  name: string
+  list: Array<item>
 }
 
-export interface XY {
-  x?: Ref<number>
-  y?: Ref<number>
+export interface RefXY {
+  x: Ref<number>
+  y: Ref<number>
 }

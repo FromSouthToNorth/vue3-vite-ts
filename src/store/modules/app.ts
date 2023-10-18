@@ -1,10 +1,17 @@
 import { defineStore } from 'pinia'
-import type { Book, XY } from '/#/index'
-import { ref } from 'vue'
+import type { Book } from '/#/index'
 import { store } from '/@/store'
 
+interface XY {
+  x: number
+  y: number
+}
+
 interface AppState {
-  xy: XY
+  xy: {
+    x: number
+    y: number
+  }
   book: Book
 }
 
@@ -12,10 +19,10 @@ export const useAppStore = defineStore({
   id: 'app',
   state: (): AppState => ({
     xy: {
-      x: ref(0),
-      y: ref(0),
+      x: 0,
+      y: 0,
     },
-    book: {},
+    book: { name: '', list: [] },
   }),
   getters: {
     getXY(state): XY {
