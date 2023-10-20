@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { computed, reactive, ref, watch } from 'vue'
+import { computed, onMounted, reactive, ref, watch } from 'vue'
 import { shuffle as _shuffle } from 'lodash-es'
 import { v4 as v4_uuid } from 'uuid'
 import { useMouse } from '../utils/mouse'
 import type { Book, item } from '/#/index'
 import { useAppStore } from '../store/modules/app'
+import { formatToDateTime } from '../utils/dateUtil'
 
 const props = defineProps<Props>()
 
@@ -86,6 +87,19 @@ watch(
   },
   { deep: true },
 )
+
+const time = ref<string>('')
+const timeout = ref<NodeJS.Timeout | null>(null)
+
+function getTime() {
+  timeout.value = setInterval(() => {
+    time.value = formatToDateTime(new Date())
+  }, 1000)
+}
+
+onMounted(() => {
+  getTime()
+})
 
 function reset() {
   author.list = defaultList()
@@ -182,6 +196,9 @@ function onMouseout() {
 
 <template>
   <div class="container">
+    <h1 class="movearea" :style="{ backgroundImage: `linear-gradient(135deg,  hsl(${x}, 80%, 50%), hsl(${y}, 80%, 50%), hsl(${x + y}, 80%, 50%))` }">
+      {{ time }}
+    </h1>
     <h1 class="movearea" :style="{ backgroundImage: `linear-gradient(135deg,  hsl(${x}, 80%, 50%), hsl(${y}, 80%, 50%), hsl(${x + y}, 80%, 50%))` }">
       {{ msg }} {{ x }}, {{ y }}
     </h1>

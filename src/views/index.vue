@@ -7,26 +7,19 @@ import type { item } from '/#/index'
 
 import { useAppSetting } from '/@/hooks/useAppSetting'
 
-const { getBook, getXY } = useAppSetting()
+const { getBook } = useAppSetting()
 
 watch(
   () =>
     getBook.value,
   (val) => {
-    console.log('watch book: ', val.name, val.list)
+    console.warn('watch book: ', val.name, val.list)
   },
   { deep: true },
 )
 
-watch(
-  () => getXY.value,
-  (val) => {
-    console.log('watch x: %d, y: %d', val.x, val.y)
-  },
-)
-
 function change(list: Array<item>) {
-  console.log(list)
+  console.info('change: ', list)
 }
 </script>
 
