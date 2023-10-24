@@ -4,6 +4,7 @@ import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
 import { configSvgIconsPlugin } from './vite/plugins/createSvgIcon'
 import createUnoCSS from './vite/plugins/createUnoCSS'
+import { generateModifyVars } from './vite/plugins/modifyVars'
 
 const root = process.cwd()
 const pathResolve = (pathname: string) => resolve(root, '.', pathname)
@@ -32,6 +33,25 @@ export default defineConfig({
         find: /\/#\//,
         replacement: `${pathResolve('types')}/`,
       },
+      // @/xxxx => src/xxxx
+      {
+        find: /@\//,
+        replacement: `${pathResolve('src')}/`,
+      },
+      // #/xxxx => types/xxxx
+      {
+        find: /#\//,
+        replacement: `${pathResolve('types')}/`,
+      },
     ],
+  },
+
+  css: {
+    preprocessorOptions: {
+      less: {
+        modifyVars: generateModifyVars(),
+        javascriptEnabled: true,
+      },
+    },
   },
 })

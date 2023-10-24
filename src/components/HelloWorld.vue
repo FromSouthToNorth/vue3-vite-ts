@@ -2,6 +2,7 @@
 import { computed, onMounted, reactive, ref, watch } from 'vue'
 import { shuffle as _shuffle } from 'lodash-es'
 import { v4 as v4_uuid } from 'uuid'
+import { Button } from 'ant-design-vue'
 import { useMouse } from '../utils/mouse'
 import type { Book, item } from '/#/index'
 import { useAppStore } from '../store/modules/app'
@@ -203,21 +204,21 @@ function onMouseout() {
       {{ msg }} {{ x }}, {{ y }}
     </h1>
     <div class="button-container">
-      <button class="item-button" @click="push">
+      <Button class="item-button" @click="push">
         push
-      </button>
-      <button class="item-button" :disabled="disabled" :class="{ shake: disabled }" type="button" @click="pop">
+      </Button>
+      <Button class="item-button" :disabled="disabled" :class="{ shake: disabled }" @click="pop">
         pop
-      </button>
-      <button class="item-button" @click="reset">
+      </Button>
+      <Button class="item-button" @click="reset">
         reset
-      </button>
-      <button class="item-button" @click="shuffle">
+      </Button>
+      <Button class="item-button" @click="shuffle">
         shuffle
-      </button>
-      <button class="item-button" @click="sort">
+      </Button>
+      <Button class="item-button" @click="sort">
         sort
-      </button>
+      </Button>
     </div>
     <p :style="{ margin: '4px' }">
       The list is not empty
@@ -245,15 +246,6 @@ function onMouseout() {
 }
 .button-container {
   padding: 6px;
-}
-.item-button {
-  font-size: 12px;
-  background: #0070d5;
-  color: #fff;
-  margin: 2px 0;
-}
-.item-button:hover {
-  background: #2490e3;
 }
 .item-button + .item-button {
   margin-left: 2px;
