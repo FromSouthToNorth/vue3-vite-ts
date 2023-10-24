@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { computed, onMounted, reactive, ref, watch } from 'vue'
+import { computed, createVNode, onMounted, reactive, ref, watch } from 'vue'
 import { shuffle as _shuffle } from 'lodash-es'
 import { v4 as v4_uuid } from 'uuid'
-import { Button } from 'ant-design-vue'
+import { Button, Space, Tour } from 'ant-design-vue'
+import type { TourProps } from 'ant-design-vue'
 import { useMouse } from '../utils/mouse'
 import type { Book, item } from '/#/index'
 import { useAppStore } from '../store/modules/app'
@@ -89,7 +90,7 @@ watch(
   { deep: true },
 )
 
-const time = ref<string>('')
+const time = ref<string>(formatToDateTime(new Date()))
 const timeout = ref<NodeJS.Timeout | null>(null)
 
 function getTime() {
@@ -193,37 +194,86 @@ function onMouseover(key: string) {
 function onMouseout() {
   closeIndex.value = null
 }
+
+const ref1 = ref(null)
+const ref2 = ref(null)
+const ref3 = ref(null)
+const ref4 = ref(null)
+const ref5 = ref(null)
+
+const current = ref<number>(0)
+const open = ref<boolean>(true)
+const steps: TourProps['steps'] = [
+  {
+    title: '添加',
+    description: '添加元素.',
+    cover: createVNode('img', {
+      alt: 'tour.png',
+      src: 'https://dji-official-fe.djicdn.com/dps/80d4349a909e93993916eb02371d408e.jpg',
+    }),
+    target: () => ref1.value && ref1.value.$el,
+  },
+  {
+    title: '弹出',
+    description: '弹出尾元素.',
+    cover: createVNode('img', {
+      alt: 'tour.png',
+      src: 'https://dji-official-fe.djicdn.com/dps/04d9ef5ece5fd3c64fef2e6986d20c7a.jpg',
+    }),
+    target: () => ref2.value && ref2.value.$el,
+  },
+  {
+    title: '重置',
+    description: '重置元素.',
+    target: () => ref3.value && ref3.value.$el,
+  },
+  {
+    title: '打乱',
+    description: '打乱元素.',
+    target: () => ref4.value && ref4.value.$el,
+  },
+  {
+    title: '排序',
+    description: '排序元素.',
+    target: () => ref5.value && ref5.value.$el,
+  },
+]
+
+function handleOpen(val: boolean): void {
+  open.value = val
+}
 </script>
 
 <template>
   <div class="container">
-    <h1 class="movearea" :style="{ backgroundImage: `linear-gradient(135deg,  hsl(${x}, 80%, 50%), hsl(${y}, 80%, 50%), hsl(${x + y}, 80%, 50%))` }">
+    <h1 class="movearea" :style="{ backgroundImage: `linear-gradient(135deg,  hsl(${y}, 80%, 50%), hsl(${x}, 80%, 50%), hsl(${x + y}, 80%, 50%))` }">
       {{ time }}
     </h1>
     <h1 class="movearea" :style="{ backgroundImage: `linear-gradient(135deg,  hsl(${x}, 80%, 50%), hsl(${y}, 80%, 50%), hsl(${x + y}, 80%, 50%))` }">
       {{ msg }} {{ x }}, {{ y }}
     </h1>
     <div class="button-container">
-      <Button class="item-button" @click="push">
-        push
-      </Button>
-      <Button class="item-button" :disabled="disabled" :class="{ shake: disabled }" @click="pop">
-        pop
-      </Button>
-      <Button class="item-button" @click="reset">
-        reset
-      </Button>
-      <Button class="item-button" @click="shuffle">
-        shuffle
-      </Button>
-      <Button class="item-button" @click="sort">
-        sort
-      </Button>
+      <Space>
+        <Button ref="ref1" class="item-button" @click="push">
+          push
+        </Button>
+        <Button ref="ref2" class="item-button" :disabled="disabled" :class="{ shake: disabled }" @click="pop">
+          pop
+        </Button>
+        <Button ref="ref3" class="item-button" @click="reset">
+          reset
+        </Button>
+        <Button ref="ref4" class="item-button" @click="shuffle">
+          shuffle
+        </Button>
+        <Button ref="ref5" class="item-button" @click="sort">
+          sort
+        </Button>
+      </Space>
     </div>
     <p :style="{ margin: '4px' }">
-      The list is not empty
+      The list is not empty: <span class="publishedBooksMessage" :style="{ color: publishedBooksMessage.color }">{{ publishedBooksMessage.text }}</span>
     </p>
-    <span class="publishedBooksMessage" :style="{ color: publishedBooksMessage.color }">{{ publishedBooksMessage.text }}</span>
     <TransitionGroup name="list" tag="ul" class="list-container">
       <li v-for="item in author.list" :key="item.key" class="item" @mouseover.stop="onMouseover(item.key)" @mouseout.stop="onMouseout">
         <span class="item-text">{{ item.value }}</span>
@@ -232,20 +282,18 @@ function onMouseout() {
         </Transition>
       </li>
     </TransitionGroup>
+    <Tour v-model:current="current" :open="open" :steps="steps" @close="handleOpen(false)" />
   </div>
 </template>
 
-<style scoped>
+<style scoped lang="less">
 .container {
   margin: 0 auto;
   max-width: 360px;
-  font-family: JetBrains Mono;
+  text-align: center;
 }
 .publishedBooksMessage {
   font-weight: 900;
-}
-.button-container {
-  padding: 6px;
 }
 .item-button + .item-button {
   margin-left: 2px;
@@ -278,12 +326,15 @@ function onMouseout() {
   color: transparent;
   -webkit-background-clip: text;
   transition: 0.3s color ease;
+  font-size: 16px;
 }
 .list-container {
   display: flex;
   flex-wrap: wrap;
+  padding: 0;
 }
 .item {
+  text-align: center;
   position: relative;
   width: 20%;
   border-radius: 4px;
@@ -292,16 +343,12 @@ function onMouseout() {
   line-height: 26px;
   font-size: 13px;
   cursor: pointer;
-}
-.item item-text {
-  display: block;
-  width: 100%;
-}
-.item:hover {
-  color: #1890ff;
-  box-shadow: inset 2px 2px 2px 0px rgba(255, 255, 255, .5),
-  2px 2px 2px 0px rgba(0, 0, 0, .1),
-  4px 4px 5px 0px rgba(0, 0, 0, .1);
+  list-style-type:none;
+
+  & .item-text {
+    display: block;
+    width: 100%;
+  }
 }
 .item-close {
   color: #ff7875;
@@ -309,9 +356,10 @@ function onMouseout() {
   position: absolute;
   top: 2px;
   right: 2px;
-}
-.item-close:hover {
-  color: #f5222d;
+
+  &:hover {
+    color: #f5222d;
+  }
 }
 .fade-enter-active,
 .fade-leave-active {
